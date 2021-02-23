@@ -6,6 +6,8 @@ from selenium.webdriver.support.expected_conditions import presence_of_element_l
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.action_chains import ActionChains
 import time
+import json
+
 def getProduct(url, driver):
   driver.get(url)
   title= driver.find_element_by_id('productTitle').text
@@ -36,4 +38,9 @@ def getProduct(url, driver):
 if __name__=="__main__":
   driver = webdriver.Chrome('/home/kartikay/Kartikay/Projects/amazon-scraper/chromedriver')
   wait = WebDriverWait(driver, 10)
-  print(getProduct('https://www.amazon.in/Amazon-Brand-Solimo-Premium-Stainless/dp/B071SDYY6N/', driver))
+  with open("urls.txt",'r') as urllist, open('output.json','w') as outfile:
+    products = {}
+    for url in urllist.read().splitlines():
+        details = getProduct(url, driver)
+        products[url] = details
+    json.dump(products,outfile)
